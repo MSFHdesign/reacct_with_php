@@ -32,7 +32,7 @@ function Login() {
 
   return (
     <div className={styles["login-container"]}>
-      <h1 className={styles["login-header"]}>Michael❤️Naya</h1>
+      <h1 className={styles["login-header"]}>Login</h1>
       <form onSubmit={handleLogin}>
         <div className={styles["form-group"]}>
           <label htmlFor="username" className={styles["form-label"]}>Brugernavn:</label>
