@@ -1,32 +1,38 @@
 import React, { useState } from "react";
-import styles from "./login.module.css"; // Importér stilklasserne som et objekt
+import { useNavigate } from "react-router-dom";
+import styles from "./login.module.css";
 
 function Login() {
-  // Tilstandsvariabler til at gemme brugernavn og adgangskode
-  const [username, setUsername] = useState("");
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [loginStatus, setLoginStatus] = useState("");
+  const [loginStatus, setLoginStatus] = useState(false);
+  const [loginMessage, setLoginMessage] = useState("");
+  const [loginAttempted, setLoginAttempted] = useState(false);
 
-  // Funktion til at håndtere formularindsendelse
+  const navigate = useNavigate();
+
   const handleLogin = async (e) => {
     e.preventDefault();
+    setLoginAttempted(true);
 
-    // Her kan du bruge JavaScript Fetch API til at sende brugernavn og adgangskode til din PHP-backend
-    // og håndtere svaret, f.eks. setLoginStatus("Success") eller setLoginStatus("Error").
-
-    // Eksempel: Send data til backend
-    const response = await fetch('backend/api/login.php', {
+    const response = await fetch('http://localhost:8000/login.php', {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ username, password }),
+      body: JSON.stringify({ email, password }),
     });
 
+    const data = await response.json();
+
     if (response.status === 200) {
-      setLoginStatus("Success");
+      setLoginStatus(true);
+      setLoginMessage(data.message);
+      localStorage.setItem("isLoggedIn", "true");
+      navigate(data.redirectTo);
     } else {
-      setLoginStatus("Error");
+      setLoginStatus(false);
+      setLoginMessage(data.message);
     }
   };
 
@@ -35,13 +41,13 @@ function Login() {
       <h1 className={styles["login-header"]}>Login</h1>
       <form onSubmit={handleLogin}>
         <div className={styles["form-group"]}>
-          <label htmlFor="username" className={styles["form-label"]}>Brugernavn:</label>
+          <label htmlFor="email" className={styles["form-label"]}>E-mail:</label>
           <input
             type="text"
-            id="username"
+            id="email" // Unik ID for email-input
             className={styles["form-input"]}
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
             required
           />
         </div>
@@ -49,7 +55,7 @@ function Login() {
           <label htmlFor="password" className={styles["form-label"]}>Adgangskode:</label>
           <input
             type="password"
-            id="password"
+            id="password" // Unik ID for password-input
             className={styles["form-input"]}
             value={password}
             onChange={(e) => setPassword(e.target.value)}
@@ -58,8 +64,11 @@ function Login() {
         </div>
         <button type="submit" className={styles["login-button"]}>Log ind</button>
       </form>
-      {loginStatus === "Success" && <p className={styles["login-success"]}>Log ind var vellykket!</p>}
-      {loginStatus === "Error" && <p className={styles["login-error"]}>Fejl i log ind. Tjek dine oplysninger.</p>}
+      {loginAttempted && (
+        <p className={loginStatus ? styles["login-success"] : styles["login-error"]}>
+          {loginMessage}
+        </p>
+      )}
     </div>
   );
 }

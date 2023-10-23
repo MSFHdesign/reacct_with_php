@@ -1,4 +1,4 @@
-/* login.module.css */
+/* signup.module.css */
 
 /* Global styles */
 * {
@@ -13,15 +13,16 @@ body {
 }
 
 /* Mobile-first styles */
-.login-container {
+.signup-container {
   max-width: 100%;
   padding: 20px;
   background: var(--modal-content-background);
   border-radius: 5px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  text-align: center;
 }
 
-.login-header {
+.signup-header {
   text-align: center;
   color: #333;
   font-size: 24px;
@@ -46,7 +47,7 @@ body {
   font-size: 16px;
 }
 
-.login-button {
+.signup-button {
   width: 100%;
   background: var(--primary-color);
   color: #fff;
@@ -57,12 +58,12 @@ body {
   cursor: pointer;
 }
 
-.login-button:hover {
+.signup-button:hover {
   background: var(--primary-hover-color);
 }
 
-.login-success,
-.login-error {
+.signup-success,
+.signup-error {
   text-align: center;
   font-size: 18px;
   margin-top: 15px;
@@ -70,19 +71,19 @@ body {
   border-radius: 5px;
 }
 
-.login-success {
+.signup-success {
   background: var(--success-background);
   color: #fff;
 }
 
-.login-error {
+.signup-error {
   background: var(--error-background);
   color: #fff;
 }
 
 /* Media query for larger screens */
 @media screen and (min-width: 768px) {
-  .login-container {
+  .signup-container {
     max-width: 400px;
     margin: 0 auto;
   }
