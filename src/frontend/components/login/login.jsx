@@ -15,26 +15,32 @@ function Login() {
     e.preventDefault();
     setLoginAttempted(true);
 
-    const response = await fetch('http://localhost:8000/login.php', {
+    const response = await fetch(process.env.REACT_APP_Login, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({ email, password }),
+      mode: "cors",
     });
-
-    const data = await response.json();
-
-    if (response.status === 200) {
-      setLoginStatus(true);
-      setLoginMessage(data.message);
-      localStorage.setItem("isLoggedIn", "true");
-      navigate(data.redirectTo);
-    } else {
-      setLoginStatus(false);
-      setLoginMessage(data.message);
+    try {
+      const data = await response.json();
+    
+      if (response.status === 200) {
+        setLoginStatus(true);
+        setLoginMessage(data.message);
+        localStorage.setItem("isLoggedIn", "true");
+        navigate(data.redirectTo);
+      } else {
+        setLoginStatus(false);
+        setLoginMessage(data.message);
+      }
+    } catch (error) {
+      console.error('Fejl i JSON-parsing:', error);
+      // Behandling af fejl, f.eks. sæt en fejlbesked i din frontend
     }
-  };
+  }
+  ;
 
   return (
     <div className={styles["login-container"]}>

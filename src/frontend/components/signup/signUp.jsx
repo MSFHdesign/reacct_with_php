@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import styles from "./signup.module.css";
 
+
 function Signup() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -24,7 +25,9 @@ function Signup() {
       return;
     }
 
-    const response = await fetch('http://localhost:8000/signup.php', {
+    console.log(process.env.Register);
+
+    const response = await fetch(process.env.REACT_APP_Register, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -82,6 +85,7 @@ function Signup() {
           {signupMessage}
         </p>
       )}
+
     </div>
   );
 }

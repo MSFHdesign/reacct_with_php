@@ -1,5 +1,7 @@
 <?php
-header("Access-Control-Allow-Origin: http://localhost:3000"); // Allow access from localhost:3000
+
+header("Access-Control-Allow-Origin: http://localhost:3000"); 
+// Allow access from localhost:3000
 header("Access-Control-Allow-Headers: Content-Type");
 
 // Handle CORS preflight request
@@ -10,8 +12,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
     header('Access-Control-Max-Age: 86400');
     header('Content-Length: 0');
     header('Content-Type: text/plain');
+    
     exit;
 }
+include('../db/connection.php');
 
 
 
@@ -22,14 +26,6 @@ $request = json_decode($data);
 // Initialize a response array
 $response = array();
 
-// Your MySQL database connection code
-$server = "mysql29.unoeuro.com";
-$username = "siindevelopment_dk";
-$password = "r9zbpHRAkyGw5BfDhmxg";
-$dbname = "siindevelopment_dk_db";
-
-$mySQL = new mysqli($server, $username, $password, $dbname);
-$mySQL->set_charset("utf8mb4");
 
 // Hent adgangskoden fra anmodningen
 if (isset($request->email) && isset($request->password)) {
@@ -78,5 +74,5 @@ if (isset($request->email) && isset($request->password)) {
 }
 
 // Send responsen som JSON
-header('Content-Type: application/json');
+
 echo json_encode($response);
