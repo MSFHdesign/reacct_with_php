@@ -55,6 +55,7 @@ if (isset($request->email) && isset($request->password)) {
             $_SESSION['user'] = $user;
             // Redirect brugeren til dashboard
             $response['redirectTo'] = "dashboard";
+            $response['email'] = $email;
 
         } else {
             // Forkert adgangskode
@@ -70,7 +71,7 @@ if (isset($request->email) && isset($request->password)) {
     $stmt->close();
 } else {
     // Behandling af fejl, hvis "email" eller "password" mangler i JSON-data
-    $response['message'] = "Error";
+    $response['message'] = "Nothing to process";
 }
 
 // Send responsen som JSON

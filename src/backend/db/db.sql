@@ -1,4 +1,4 @@
--- Active: 1696918485589@@mysql29.unoeuro.com@3306@siindevelopment_dk_db
+-- Active: 1693467841213@@mysql29.unoeuro.com@3306@siindevelopment_dk_db
 -- Drop den eksisterende tabel, hvis den findes
 
 DROP TABLE IF EXISTS users;
@@ -13,3 +13,11 @@ CREATE TABLE
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
         updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
     );
+
+    CREATE TABLE sessions (
+    session_id VARCHAR(255) PRIMARY KEY,
+    user_id INT NOT NULL,
+    login_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    INDEX (user_id),
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+);

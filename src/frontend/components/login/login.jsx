@@ -30,7 +30,8 @@ function Login() {
         setLoginStatus(true);
         setLoginMessage(data.message);
         localStorage.setItem("isLoggedIn", "true");
-        navigate(data.redirectTo);
+        navigate(data.redirectTo, { state: { email: data.email } });
+        console.log("Login successful:" + data.email);
       } else {
         setLoginStatus(false);
         setLoginMessage(data.message);
