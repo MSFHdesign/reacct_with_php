@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import styles from "./login.module.css";
-
 function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -25,23 +24,27 @@ function Login() {
     });
     try {
       const data = await response.json();
-    
+
       if (response.status === 200) {
         setLoginStatus(true);
         setLoginMessage(data.message);
-        localStorage.setItem("isLoggedIn", "true");
+        // Store the token in localStorage
+        localStorage.setItem("token", data.token);
         navigate(data.redirectTo, { state: { email: data.email } });
+        console.log("redirect to: " + data.redirectTo);
+        console.log("Login successful:" + data.token);
         console.log("Login successful:" + data.email);
       } else {
         setLoginStatus(false);
         setLoginMessage(data.message);
+        localStorage.setItem("isLoggedIn", false)
       }
     } catch (error) {
       console.error('Fejl i JSON-parsing:', error);
-      // Behandling af fejl, f.eks. sæt en fejlbesked i din frontend
+      // Handle errors, e.g., set an error message in your frontend
     }
-  }
-  ;
+  };
+  
 
   return (
     <div className={styles["login-container"]}>
@@ -51,7 +54,7 @@ function Login() {
           <label htmlFor="email" className={styles["form-label"]}>E-mail:</label>
           <input
             type="text"
-            id="email" // Unik ID for email-input
+            id="email"
             className={styles["form-input"]}
             value={email}
             onChange={(e) => setEmail(e.target.value)}
@@ -62,7 +65,7 @@ function Login() {
           <label htmlFor="password" className={styles["form-label"]}>Adgangskode:</label>
           <input
             type="password"
-            id="password" // Unik ID for password-input
+            id="password" 
             className={styles["form-input"]}
             value={password}
             onChange={(e) => setPassword(e.target.value)}
