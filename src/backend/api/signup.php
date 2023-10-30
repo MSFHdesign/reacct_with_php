@@ -29,13 +29,7 @@ if (isset($request->email) && isset($request->password)) {
     // For eksempel bruge MySQLi eller PDO til at indsætte data i databasen
 
     // Eksempel med MySQLi:
-    $server = "mysql29.unoeuro.com";
-    $username = "siindevelopment_dk";
-    $db_password = "r9zbpHRAkyGw5BfDhmxg";
-    $dbname = "siindevelopment_dk_db";
-
-    $mySQL = new mysqli($server, $username, $db_password, $dbname);
-    $mySQL->set_charset("utf8mb4");
+    include('../db/connection.php');
 
     // Forbered en SQL-forespørgsel til at indsætte brugeren
     $query = "INSERT INTO users (email, password) VALUES (?, ?)";
