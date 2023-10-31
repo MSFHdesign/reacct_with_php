@@ -1,40 +1,37 @@
-import React from 'react';
-import { useNavigate } from 'react-router-dom';
-
-function Logout() {
-  const navigate = useNavigate();
-
-  const handleLogout = async () => {
-    try {
-      // Send en fetch-anmodning til http://localhost:8000/login.php for at afslutte sessionen
-      const response = await fetch('http://localhost:8000/login.php', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        // Her kan du sende eventuelle data, der kræves for at afslutte sessionen
-        body: JSON.stringify({ logout: true }), // Send en anmodning om logud
+function Logout({ onLogout }) {
+  const handleLogout = () => {
+    fetch("http://localhost:8000/src/backend/api/logout.php", {
+      method: "POST",
+      body: JSON.stringify({ session_id: localStorage.getItem("token") }),
+      headers: {
+        "Content-Type": "application/json",
+      },
+    })
+      .then((response) => {
+        if (response.ok) {
+          return response.json(); // Parse JSON response
+        } else {
+          throw new Error("Network response was not ok");
+        }
+      })
+      .then((data) => {
+        if (data.success) {
+          // Logout på klienten
+          // localStorage.clear(); // Fjern alle brugerdata på klienten
+        //  onLogout(false);
+        } else {
+          console.error("Fejl ved logout:", data.error);
+        }
+      })
+      .catch((error) => {
+        console.error("Fejl ved logout:", error);
       });
-
-      if (response.ok) {
-        // Sessionen er blevet ødelagt på serveren
-        console.log('Brugeren er logget ud');
-        navigate('/');
-      } else {
-        // Håndter fejl, hvis logud-anmodningen ikke lykkes
-        console.error('Fejl under logud');
-      }
-    } catch (error) {
-      console.error('Fejl ved logud-anmodning:', error);
-    }
   };
 
   return (
-    <div>
-      <h1>Logout</h1>
-      <button onClick={handleLogout}>Logout</button>
-    </div>
+    <button onClick={handleLogout}>Logout</button>
   );
 }
+
 
 export default Logout;

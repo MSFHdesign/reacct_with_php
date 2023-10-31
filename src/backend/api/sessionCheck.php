@@ -1,34 +1,39 @@
 <?php
-header("Access-Control-Allow-Origin: http://localhost:3000");
-header("Access-Control-Allow-Headers: Content-Type");
+require('../db/CORS.php');
+require('../db/connection.php');
 
-require ('../db/connection.php'); 
+// Læs inputdata som ren tekst fra anmodningen
+$data = file_get_contents("php://input");
 
-session_start();
+// Tjek om token er tilgængelig og ikke tom
+if (!empty($data)) {
+    // Hent token fra data
+    $token = $data;
 
-$data = json_decode(file_get_contents('php://input'));
-$sessionKey = $data->sessionKey;
+    // Forbered SQL-forespørgsel for at finde token i databasen
+    $query = "SELECT session_id FROM sessions WHERE session_id = ?";
+    $stmt = $mySQL->prepare($query);
+    $stmt->bind_param("s", $token);
+    $stmt->execute();
+    $stmt->store_result();
 
-$userId = $_SESSION['user_id'];
-
-$sql = "SELECT user_id FROM sessions WHERE session_id = ?";
-$stmt = $mySQL->prepare($sql); // Assuming your database connection variable is $mySQL
-$stmt->bind_param("s", $sessionKey);
-$stmt->execute();
-$result = $stmt->get_result();
-
-if ($result->num_rows > 0) {
-    $user = $result->fetch_assoc();
-    $storedUserId = $user['user_id'];
-
-    if ($userId === $storedUserId) {
-        http_response_code(200);
-        echo json_encode(['valid' => true]);
+    if ($stmt->num_rows > 0) {
+        // Token blev fundet i databasen
+        $stmt->bind_result($session_id);
+        $stmt->fetch();
+        $response = array('valid' => true, 'data from FE token' => $token, 'data from DB' => $session_id);
     } else {
-        http_response_code(401);
-        echo json_encode(['valid' => false]);
+        // Token blev ikke fundet
+        $response = array('valid' => false, 'error' => 'Token not found in the database');
     }
+
+    $stmt->close();
 } else {
-    http_response_code(401);
-    echo json_encode(['valid' => false]);
+    // Token mangler eller er tom, send en fejlmeddelelse
+    $response = array('valid' => false, 'error' => 'Token is missing or empty');
 }
+
+// Send respons som JSON
+header('Content-Type: application/json');
+echo json_encode($response);
+?>

@@ -1,26 +1,18 @@
-import React from "react";
-import Logout from "../frontend/components/logout/logout";
-import { useLocation } from 'react-router-dom';
-
-function Dashboard() {
-
-  const location = useLocation();
-  const data = location.state;
-  const email = data.email;
-  console.log(email);
-
+import React, { useEffect } from "react";
+import { Link } from "react-router-dom";
+import Logout from "../frontend/components/logout/logout.jsx";
+function Dashboard({ checkSession, isLoggedIn }) {
+  useEffect(() => {
+    checkSession();
+  }, [checkSession]);
 
   return (
     <div>
-    <h1>Dashboard</h1>
-    {email ? (
-      <p>Velkommen {email} din dashboard</p>
-    ) : (
-      <p>Velkommen din dashboard</p>
-    )}
-    <Logout />
-  </div>
-  
+      <h1>Dashboard</h1>
+      <Link to="/">Tilbage til startsiden</Link>
+
+      <Logout />
+    </div>
   );
 }
 

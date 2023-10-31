@@ -1,17 +1,5 @@
 <?php
-header("Access-Control-Allow-Origin: http://localhost:3000"); // Tillad adgang fra din React-app
-header("Access-Control-Allow-Headers: Content-Type");
-
-// Håndter CORS preflight-anmodning
-if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
-    header('Access-Control-Allow-Origin: http://localhost:3000');
-    header('Access-Control-Allow-Headers: Content-Type');
-    header('Access-Control-Allow-Methods: POST');
-    header('Access-Control-Max-Age: 86400');
-    header('Content-Length: 0');
-    header('Content-Type: text/plain');
-    exit;
-}
+require('../db/CORS.php');
 
 // Hent JSON-data fra anmodningen
 $data = file_get_contents("php://input");
@@ -25,10 +13,7 @@ if (isset($request->email) && isset($request->password)) {
     $email = $request->email;
     $password = $request->password;
 
-    // Her kan du tilføje kode til at indsætte brugeren i din database
-    // For eksempel bruge MySQLi eller PDO til at indsætte data i databasen
 
-    // Eksempel med MySQLi:
     include('../db/connection.php');
 
     // Forbered en SQL-forespørgsel til at indsætte brugeren

@@ -1,18 +1,5 @@
 <?php
-header("Access-Control-Allow-Origin: http://localhost:3000");
-header("Access-Control-Allow-Headers: Content-Type");
-
-// Handle CORS preflight request
-if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
-    header('Access-Control-Allow-Origin: http://localhost:3000');
-    header('Access-Control-Allow-Headers: Content-Type');
-    header('Access-Control-Allow-Methods: POST');
-    header('Access-Control-Max-Age: 86400');
-    header('Content-Length: 0');
-    header('Content-Type: text/plain');
-
-    exit;
-}
+require('../db/CORS.php');
 require('../db/connection.php');
 
 // Get JSON data from the request
@@ -41,8 +28,8 @@ if (isset($request->email) && isset($request->password)) {
         if (password_verify($enteredPassword, $hashedPassword)) {
             // Start a session
             session_start();
-            http_response_code(200);
             // Create a session entry in your sessions table
+            http_response_code(200);
             $session_id = bin2hex(random_bytes(32));
             $user_id = $user['id'];
             $login_time = date('Y-m-d H:i:s');
@@ -55,11 +42,13 @@ if (isset($request->email) && isset($request->password)) {
             $session_data = array('session_id' => $session_id, 'user_id' => $user_id);
             $token = base64_encode(json_encode($session_data));
 
-            // Send the token back to the client
-            $response['message'] = "The user is successfully logged in";
-            $response['token'] = $token;
-            $response['email'] = $user['email'];
-            $response['redirectTo'] = '/dashboard';
+            $response = array(
+                'status' => 200, // HTTP-statuskode
+                'message' => "The user is successfully logged in",
+                'token' => $session_id,
+                'email' => $user['email'],
+                'redirectTo' => '/dashboard'
+            );
 
 
         } else {
